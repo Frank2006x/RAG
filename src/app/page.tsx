@@ -66,10 +66,10 @@ export default function Home() {
   return (
     <div className="container mx-auto max-w-4xl min-h-screen p-4 flex flex-col ">
       <div className="text-center mb-8 sticky top-3 z-10  mx-auto bg-secondary px-4 py-2 rounded-lg shadow-md backdrop-blur-sm">
-        <h1 className="text-2xl font-bold text-white mb-2">
+        <h1 className="text-2xl font-bold  mb-2">
           Sweet Delights Bakery Assistant
         </h1>
-        <p className="text-sm text-white">
+        <p className="text-sm ">
           Ask me anything about our bakery! 🍰
         </p>
       </div>

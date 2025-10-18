@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     });
 
     const relevantDocs = await retriever.invoke(query);
-    console.log("Relevant documents:", relevantDocs);
+ 
 
     const promptTemplate = PromptTemplate.fromTemplate(`
 You are a friendly and helpful AI assistant 🤖.
