@@ -21,36 +21,42 @@ export async function POST(request: Request) {
       modelName: "models/gemini-embedding-001",
     });
 
-    // Connect to Qdrant vector store with custom content field mapping
     const vectorStore = new QdrantVectorStore(embedding_function, {
       client: qdrantClient,
       collectionName: "newDocs",
-      contentPayloadKey: "text", 
+      contentPayloadKey: "text",
     });
 
-    
     const retriever = vectorStore.asRetriever({
       searchType: "similarity",
       k: 5,
     });
 
-    
     const relevantDocs = await retriever.invoke(query);
     console.log("Relevant documents:", relevantDocs);
 
-    
-    const promptTemplate = PromptTemplate.fromTemplate(
-      "Use the following pieces of context to answer the question at the end. " +
-        "If you don't know the answer, just say that you don't know, don't try to make up an answer. " +
-        "Context: {relevant_docs} \n\n Question: {query}. answer the question more friendly with emojis."
-    );
+    const promptTemplate = PromptTemplate.fromTemplate(`
+You are a friendly and helpful AI assistant 🤖.
+
+Use the following context to answer the user's question clearly and naturally.  
+If the user greets you, greet them back warmly with emojis 😊.  
+If you don’t know the answer, simply say so — don’t make up information ❌.  
+
+Context:
+{relevant_docs}
+
+Question:
+{query}
+
+Please give your final answer in a friendly tone with appropriate emojis 🌟.
+Dont return markedown format.just plain text.
+`);
 
     const formattedPrompt = await promptTemplate.format({
       relevant_docs: relevantDocs.map((doc) => doc.pageContent).join("\n\n"),
       query,
     });
 
-    
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
     const result = await model.generateContent(formattedPrompt);
     const response = result.response.text();
